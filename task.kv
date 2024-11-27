@@ -1,0 +1,277 @@
+ScreenManager:
+    Home:
+    Task:
+    RegLog:
+    Register:
+    Login:
+
+<Home>:
+    name: "Home"
+    md_bg_color: 0.678, 0.847, 0.902, 1  # Light blue background
+    RelativeLayout:
+        Image:
+            source: "images/bluepink.jpg"  # Replace with your image file
+            allow_stretch: True  # Allow the image to stretch to fill the screen
+            keep_ratio: False  # Ensure it covers the entire area
+            size_hint: 1, 1  # Cover the entire screen
+
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 10  # Adds spacing between elements
+        padding: [20, 50, 20, 50]  # Adds padding (left, top, right, bottom)
+
+        MDIconButton:
+            icon: "account-circle-outline"
+            pos_hint: {"center_x":.9,"center_y":.5}
+            icon_size: "45sp"
+            on_release:
+                root.manager.current = "RegLog"
+                root.manager.transition.direction = 'left'
+
+
+        MDLabel:
+            text: "TaskSync"
+            halign: "center"
+            font_style: "H3"
+
+        Image:
+            size_hint: None, None
+            width: 100
+            height: 100
+            allow_stretch: True
+            keep_ratio: True
+            source: "images/icon.png"
+            pos_hint: {"center_x": 0.5}
+
+        Widget:  # Spacer to push button down
+            size_hint_y: 0.5
+
+        MDRaisedButton:
+            text: "Get Started"
+            pos_hint: {"center_x": 0.5}
+            md_bg_color: 0.255, 0.205, 0.148, 1
+            elevation: 0
+            on_release:
+                root.manager.current = "Task"
+                root.manager.transition.direction = 'left'
+
+
+<Task>:
+    name: "Task"
+    md_bg_color: 0.678, 0.847, 0.902, 1
+    RelativeLayout:
+        Image:
+            source: "images/bluepink.jpg"  # Replace with your image file
+            allow_stretch: True  # Allow the image to stretch to fill the screen
+            keep_ratio: False  # Ensure it covers the entire area
+            size_hint: 1, 1  # Cover the entire screen
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"center_y": 0.9}
+        on_release:
+            root.manager.current = "Home"
+            root.manager.transition.direction = 'right'
+
+    FloatLayout:
+        MDLabel:
+            text: "Today's Tasks"
+            halign: "center"
+            size_hint_y: None  # Disable vertical resizing
+            height: 1000  # Set height based on text content
+            font_style: "H3"
+
+
+    MDIconButton:
+        icon: "plus-circle"
+        pos_hint: {"center_x":.5,"center_y":.1}
+        icon_size: "64sp"
+
+<RegLog>:
+    name:"RegLog"
+    md_bg_color: 0.678, 0.847, 0.902, 1
+    RelativeLayout:
+        Image:
+            source: "images/bluepink.jpg"  # Replace with your image file
+            allow_stretch: True  # Allow the image to stretch to fill the screen
+            keep_ratio: False  # Ensure it covers the entire area
+            size_hint: 1, 1  # Cover the entire screen
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"center_y": 0.9}
+        on_release:
+            root.manager.current = "Home"
+            root.manager.transition.direction = 'right'
+
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 5  # Adds spacing between elements
+        padding: [20, 160, 20, 160]  # Adds padding (left, top, right, bottom)
+
+        Image:
+            size_hint: None, None
+            width: 100
+            height: 100
+            allow_stretch: True
+            keep_ratio: True
+            source: "images/account.png"
+            pos_hint: {"center_x": 0.5}
+
+        Widget:  # Spacer to push button down
+            size_hint_y: 0.4
+
+        MDRaisedButton:
+            text: "Register"
+            pos_hint: {"center_x": 0.5}
+            md_bg_color: 0.255, 0.205, 0.148, 1
+            elevation: 0
+            on_release:
+                root.manager.current = "Register"
+                root.manager.transition.direction = 'left'
+
+        MDRaisedButton:
+            text: "Login"
+            pos_hint: {"center_x": 0.5}
+            md_bg_color: 0.255, 0.205, 0.148, 1
+            elevation: 0
+            on_release:
+                root.manager.current = "Login"
+                root.manager.transition.direction = 'left'
+
+<Register>:
+    name: "Register"
+    RelativeLayout:
+        Image:
+            source: "images/bluepink.jpg"  # Replace with your image file
+            allow_stretch: True  # Allow the image to stretch to fill the screen
+            keep_ratio: False  # Ensure it covers the entire area
+            size_hint: 1, 1  # Cover the entire screen
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"center_x": 0.1, "center_y": 0.9}
+        on_release:
+            root.manager.current = "RegLog"
+            root.manager.transition.direction = 'right'
+
+    MDTextField:
+        id: username_text
+        hint_text: "Username"
+        helper_text: "There is an error in the username"
+        color_mode: "custom"
+        line_color_normal: app.theme_cls.primary_color
+        line_color_focus: 0, 1, 0, 1
+        helper_text: "Required"
+        helper_text_mode: "on_error"
+        mode: "rectangle"
+        icon_right: "account"
+        pos_hint: {"center_x": 0.5, "center_y": 0.8}  # Centered horizontally
+        required: True
+        size_hint: (0.6, 0.1)  # Reduced width
+        text_color_normal: "black"  # Text color when inactive
+        text_color_focus: "black"  # Text color when focused
+        hint_text_color_normal: "gray"
+
+    MDTextField:
+        id: email_field
+        hint_text: "Email"
+        helper_text: "There is an error in the email"
+        color_mode: "custom"
+        line_color_normal: app.theme_cls.primary_color
+        line_color_focus: 0, 1, 0, 1
+        helper_text: "Required"
+        helper_text_mode: "on_error"
+        mode: "rectangle"
+        icon_right: "gmail"
+        pos_hint: {"center_x": 0.5, "center_y": 0.6}  # Centered horizontally
+        required: True
+        size_hint: (0.6, 0.1)  # Reduced width
+        required: True
+        on_text_validate: app.validate_email(self, self.text)
+        on_focus: if not self.focus: app.validate_email(self, self.text)
+        text_color_normal: "black"  # Text color when inactive
+        text_color_focus: "black"  # Text color when focused
+        hint_text_color_normal: "gray"
+
+    MDTextField:
+        id: password_field
+        hint_text: "Password"
+        helper_text: "There is an error in the password"
+        color_mode: "custom"
+        line_color_normal: app.theme_cls.primary_color
+        line_color_focus: 0, 1, 0, 1
+        helper_text: "Required"
+        helper_text_mode: "on_error"
+        mode: "rectangle"
+        icon_right: "eye"
+        pos_hint: {"center_x": 0.5, "center_y": 0.4}  # Centered horizontally
+        required: True
+        size_hint: (0.6, 0.1)  # Reduced width
+        required: True
+        on_text_validate: app.validate_email(self, self.text)
+        on_focus: if not self.focus: app.validate_email(self, self.text)
+        text_color_normal: "black"  # Text color when inactive
+        text_color_focus: "black"  # Text color when focused
+        hint_text_color_normal: "gray"
+        password: True
+        on_text_validate: app.toggle_password_visibility()
+
+
+
+<Login>:
+    name:"Login"
+    md_bg_color: 0.678, 0.847, 0.902, 1
+    RelativeLayout:
+        Image:
+            source: "images/bluepink.jpg"  # Replace with your image file
+            allow_stretch: True  # Allow the image to stretch to fill the screen
+            keep_ratio: False  # Ensure it covers the entire area
+            size_hint: 1, 1  # Cover the entire screen
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"center_y": 0.9}
+        on_release:
+            root.manager.current = "RegLog"
+            root.manager.transition.direction = 'right'
+
+    MDTextField:
+        id: email_field
+        hint_text: "Email"
+        helper_text: "There is an error in the email"
+        color_mode: "custom"
+        line_color_normal: app.theme_cls.primary_color
+        line_color_focus: 0, 1, 0, 1
+        helper_text: "Required"
+        helper_text_mode: "on_error"
+        mode: "rectangle"
+        icon_right: "gmail"
+        pos_hint: {"center_x": 0.5, "center_y": 0.6}  # Centered horizontally
+        required: True
+        size_hint: (0.6, 0.1)  # Reduced width
+        required: True
+        on_text_validate: app.validate_email(self, self.text)
+        on_focus: if not self.focus: app.validate_email(self, self.text)
+        text_color_normal: "black"  # Text color when inactive
+        text_color_focus: "black"  # Text color when focused
+        hint_text_color_normal: "gray"
+
+    MDTextField:
+        id: password_field
+        hint_text: "Password"
+        helper_text: "There is an error in the password"
+        color_mode: "custom"
+        line_color_normal: app.theme_cls.primary_color
+        line_color_focus: 0, 1, 0, 1
+        helper_text: "Required"
+        helper_text_mode: "on_error"
+        mode: "rectangle"
+        icon_right: "eye"
+        pos_hint: {"center_x": 0.5, "center_y": 0.4}  # Centered horizontally
+        required: True
+        size_hint: (0.6, 0.1)  # Reduced width
+        required: True
+        on_text_validate: app.validate_email(self, self.text)
+        on_focus: if not self.focus: app.validate_email(self, self.text)
+        text_color_normal: "black"  # Text color when inactive
+        text_color_focus: "black"  # Text color when focused
+        hint_text_color_normal: "gray"
+        password: True
+        on_text_validate: app.toggle_password_visibility()
