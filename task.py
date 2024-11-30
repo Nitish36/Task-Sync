@@ -1,7 +1,11 @@
 from kivymd.app import MDApp
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.screen import MDScreen
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.pickers import MDDatePicker
 from kivy.lang import Builder
+from datetime import datetime
+from kivymd.uix.dialog import MDDialog
 import re
 
 class Home(MDScreen):
@@ -18,10 +22,37 @@ class Register(MDScreen):
 
 class Login(MDScreen):
     pass
+
+class DialogContent(MDBoxLayout):
+    """def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.ids.date_text.text = datetime.now().strftime("%A %d %B %Y")"""
+
+    def show_date_picker(self):
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_save)
+
+    def on_save(self,instance,value,date_range):
+        date = value.strftime("%A %d %B %Y")
+        self.ids.date_text.text = str(date)
 class TaskManager(MDApp):
+    task_list_dialog = None
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.screen = None
+
+    def show_task_dialog(self):
+        if not self.task_list_dialog:
+            self.task_list_dialog = MDDialog(
+                title = "Create Task",
+                type = "custom",
+                content_cls = DialogContent()
+            )
+            self.task_list_dialog.open()
+
+    def close_dialog(self,**kwargs):
+        self.task_list_dialog.dismiss()
+
 
     def set_error_message(self, instance_textfield):
         instance_textfield.error = True
