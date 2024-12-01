@@ -47,7 +47,7 @@ class Database():
         self.cursor.execute("Update tasks SET completed=0 WHERE id = ?",(taskid,))
         self.con.commit()
         
-        task_text = self.cursor.execute("SELECT task from tasks WHERE id = ?",(taskid)).fetchall()
+        task_text = self.cursor.execute("SELECT task from tasks WHERE id = ?",(taskid,)).fetchall()
         return task_text[0][0]
 
     def delete_task(self,taskid):

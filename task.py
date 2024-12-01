@@ -78,8 +78,6 @@ class LeftCheckbox(ILeftBody,MDCheckbox):
     pass
 
 
-class TaskManager(MDApp):
-    task_list_dialog = None
 
   
 class TaskManager(MDApp):
@@ -96,7 +94,7 @@ class TaskManager(MDApp):
                 type = "custom",
                 content_cls = DialogContent()
             )
-            self.task_list_dialog.open()
+        self.task_list_dialog.open()
 
  
     def add_task(self, task_text_widget, task_date):
@@ -128,7 +126,8 @@ class TaskManager(MDApp):
         
 
     def close_dialog(self,**kwargs):
-        self.task_list_dialog.dismiss()
+        if self.task_list_dialog:
+            self.task_list_dialog.dismiss()
 
   
     def on_start(self):
