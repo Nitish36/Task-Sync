@@ -27,6 +27,7 @@ ScreenManager:
             on_release:
                 root.manager.current = "RegLog"
                 root.manager.transition.direction = 'left'
+                
 
 
         MDLabel:
@@ -85,14 +86,15 @@ ScreenManager:
             size_hint: .9, .8
 
             MDList:
-                id: container
+                id: container  # This is the container where tasks will be dynamically added
+                
+        MDIconButton:
+            icon: "plus-circle"
+            pos_hint: {"center_x":.5,"center_y":.1}
+            icon_size: "64sp"
+            on_release: app.show_task_dialog()
 
 
-    MDIconButton:
-        icon: "plus-circle"
-        pos_hint: {"center_x":.5,"center_y":.1}
-        icon_size: "64sp"
-        on_release: app.show_task_dialog()
 
 <RegLog>:
     name:"RegLog"

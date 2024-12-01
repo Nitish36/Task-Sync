@@ -5,12 +5,13 @@ from kivymd.uix.pickers import MDDatePicker
 from kivy.lang import Builder
 from datetime import datetime
 from kivymd.uix.dialog import MDDialog
- 
 from kivymd.uix.list import TwoLineAvatarIconListItem,ILeftBody
 from kivymd.uix.selectioncontrol import MDCheckbox
-  
-   
+from database import Database
 import re
+
+db = Database()
+
 
 
 class Home(MDScreen):
@@ -64,12 +65,14 @@ class ListItemWithCheckbox(TwoLineAvatarIconListItem):
     def mark(self,check,the_list_item):
         if check.active == True:
             the_list_item.text = '[s]'+the_list_item.text+'[/s]'
+            db.mark_task_as_completed(the_list_item.pk)
         
         else:
-            pass
+            the_list_item.text = str(db.mark_task_as_incompleted(the_list_item.pk))
     
     def delete_item(self,the_list_item):
         self.parent.remove_widget(the_list_item)
+        db.delete_task(the_list_item.pk)
 
 class LeftCheckbox(ILeftBody,MDCheckbox):
     pass
@@ -96,29 +99,64 @@ class TaskManager(MDApp):
             self.task_list_dialog.open()
 
  
-    def add_task(self, task_text, task_date):
+    def add_task(self, task_text_widget, task_date):
         try:
-            # Access the Task screen first
+            # Extract the text from the TextInput widget
+            task_text = task_text_widget.text  # Get the actual string from the widget
+            
+            # Create the task in the database
+            created_task = db.create_task(task_text, task_date)
+            
+            # Access the Task screen
             task_screen = self.root.get_screen('Task')  # Ensure the screen name matches the .kv file
             container = task_screen.ids.container  # Access the container inside the Task screen
+            
+            # Add the created task as a widget in the container
             container.add_widget(
                 ListItemWithCheckbox(
-                    text=f"[b]{task_text.text}[/b]",
-                    secondary_text=task_date
+                    pk=created_task[0],  # Primary key from the database
+                    text=f"[b]{created_task[1]}[/b]",  # Task text
+                    secondary_text=created_task[2]  # Task date
                 )
             )
         except KeyError as e:
             print(f"KeyError: {e}. Ensure the 'container' ID is correctly defined in the .kv file.")
         except Exception as e:
             print(f"Unexpected error: {e}")
+
+
         
 
     def close_dialog(self,**kwargs):
         self.task_list_dialog.dismiss()
 
   
-    def close_dialog(self,**kwargs):
-        self.task_list_dialog.dismiss()
+    def on_start(self):
+        try:
+            incompleted_tasks, completed_tasks = db.get_tasks()
+
+            # Add incompleted tasks
+            for task in incompleted_tasks:
+                add_task = ListItemWithCheckbox(
+                    pk=task[0],  # Assuming task[0] is the task ID
+                    text=str(task[1]),  # Task name or description
+                    secondary_text=task[2]  # Task date or additional info
+                )
+                self.root.ids.container.add_widget(add_task)
+
+            # Add completed tasks
+            for task in completed_tasks:
+                add_task = ListItemWithCheckbox(
+                    pk=task[0],  # Assuming task[0] is the task ID
+                    text=f'[s]{str(task[1])}[/s]',  # Strikethrough for completed tasks
+                    secondary_text=task[2]  # Additional info like date
+                )
+                add_task.ids.check.active = True  # Check the checkbox for completed tasks
+                self.root.ids.container.add_widget(add_task)
+        except Exception as e:
+            print(f"Error loading tasks: {e}")
+
+
 
 
    
@@ -152,4 +190,5 @@ class TaskManager(MDApp):
         password_field.password = not password_field.password
 
 
-TaskManager().run()
+if __name__ == "__main__":
+    TaskManager().run()
