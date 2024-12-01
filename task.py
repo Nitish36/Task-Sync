@@ -132,28 +132,34 @@ class TaskManager(MDApp):
   
     def on_start(self):
         try:
+            # Fetch incompleted and completed tasks from the database
             incompleted_tasks, completed_tasks = db.get_tasks()
+
+            # Access the Task screen container
+            task_screen = self.root.get_screen('Task')
+            container = task_screen.ids.container
 
             # Add incompleted tasks
             for task in incompleted_tasks:
                 add_task = ListItemWithCheckbox(
-                    pk=task[0],  # Assuming task[0] is the task ID
-                    text=str(task[1]),  # Task name or description
-                    secondary_text=task[2]  # Task date or additional info
+                    pk=task[0],  # Task ID from the database
+                    text=f"[b]{task[1]}[/b]",  # Task name
+                    secondary_text=task[2]  # Task date
                 )
-                self.root.ids.container.add_widget(add_task)
+                container.add_widget(add_task)
 
             # Add completed tasks
             for task in completed_tasks:
                 add_task = ListItemWithCheckbox(
-                    pk=task[0],  # Assuming task[0] is the task ID
-                    text=f'[s]{str(task[1])}[/s]',  # Strikethrough for completed tasks
-                    secondary_text=task[2]  # Additional info like date
+                    pk=task[0],  # Task ID from the database
+                    text=f"[s]{task[1]}[/s]",  # Strikethrough for completed tasks
+                    secondary_text=task[2]  # Task date
                 )
                 add_task.ids.check.active = True  # Check the checkbox for completed tasks
-                self.root.ids.container.add_widget(add_task)
+                container.add_widget(add_task)
         except Exception as e:
             print(f"Error loading tasks: {e}")
+
 
 
 
