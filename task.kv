@@ -1,5 +1,6 @@
 ScreenManager:
     Home:
+    Workspace:
     Task:
     RegLog:
     Register:
@@ -27,7 +28,7 @@ ScreenManager:
             on_release:
                 root.manager.current = "RegLog"
                 root.manager.transition.direction = 'left'
-                
+
 
 
         MDLabel:
@@ -53,8 +54,63 @@ ScreenManager:
             md_bg_color: 0.255, 0.205, 0.148, 1
             elevation: 0
             on_release:
+                root.manager.current = "Workspace"
+                root.manager.transition.direction = 'left'
+
+
+<Workspace>:
+    name: "Workspace"
+    md_bg_color: 0.678, 0.847, 0.902, 1
+    RelativeLayout:
+        Image:
+            source: "images/bluepink.jpg"  # Replace with your image file
+            allow_stretch: True  # Allow the image to stretch to fill the screen
+            keep_ratio: False  # Ensure it covers the entire area
+            size_hint: 1, 1  # Cover the entire screen
+    MDIconButton:
+        icon: "arrow-left"
+        pos_hint: {"center_y": 0.9}
+        on_release:
+            root.manager.current = "Home"
+            root.manager.transition.direction = 'right'
+
+    FloatLayout:
+        MDLabel:
+            text: "Workspace"
+            halign: "center"
+            size_hint_y: None  # Disable vertical resizing
+            height: 1000  # Set height based on text content
+            font_style: "H3"
+
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 5  # Adds spacing between elements
+        padding: [20, 20, 20, 100]  # Adds padding (left, top, right, bottom)
+
+
+        Widget:  # Spacer to push button down
+            size_hint_y: 0.5
+
+        MDRaisedButton:
+            text: "Note Taking"
+            pos_hint: {"center_x": 0.5}
+            theme_text_color: "Custom"
+            md_bg_color: 0.255, 0.205, 0.148, 1
+            elevation: 0
+            on_release:
+                root.manager.current = "Note Taking"
+                root.manager.transition.direction = 'left'
+
+        MDRaisedButton:
+            text: "Task"
+            pos_hint: {"center_x": 0.5}
+            theme_text_color: "Custom"
+            md_bg_color: 0.255, 0.205, 0.148, 1
+            elevation: 0
+            on_release:
                 root.manager.current = "Task"
                 root.manager.transition.direction = 'left'
+
 
 
 <Task>:
@@ -80,14 +136,14 @@ ScreenManager:
             size_hint_y: None  # Disable vertical resizing
             height: 1000  # Set height based on text content
             font_style: "H3"
-        
+
         ScrollView:
             pos_hint: {'center_y': .4, 'center_x': .5}
             size_hint: .9, .8
 
             MDList:
                 id: container  # This is the container where tasks will be dynamically added
-                
+
         MDIconButton:
             icon: "plus-circle"
             pos_hint: {"center_x":.5,"center_y":.1}
@@ -294,23 +350,23 @@ ScreenManager:
 
     GridLayout:
         rows: 1
-        
+
         MDTextField:
             id: task_text
             hint_text: "Add Task.."
             pos_hint: {"center_y":0.4}
             max_text_length:50
             on_text_validate:(app.add_task(task_text,date_text.text),app.close_dialog())
-        
+
         MDIconButton:
             icon: "calendar"
             on_release: root.show_date_picker()
             padding: "10dp"
-    
+
     MDLabel:
         spacing: "10dp"
         id: date_text
-    
+
     BoxLayout:
         orientation: "horizontal"
 
@@ -318,7 +374,7 @@ ScreenManager:
             text: "Save"
             on_release: (app.add_task(task_text,date_text.text),app.close_dialog())
 
-        
+
         MDFlatButton:
             text: "Cancel"
             on_release: app.close_dialog()
@@ -329,9 +385,9 @@ ScreenManager:
 
     LeftCheckbox:
         id:check
-        on_release: 
+        on_release:
             root.mark(check,the_list_item)
-    
+
     IconRightWidget:
         icon: 'trash-can-outline'
         theme_text_color:"Custom"

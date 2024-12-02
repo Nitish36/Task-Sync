@@ -16,13 +16,14 @@ class Database():
                             )""")
         self.con.commit()
 
-    def create_task(self,task,due_date=None):
-        self.cursor.execute("Insert Into tasks(task,due_date,completed) VALUES(?,?,?)",(task,due_date,0))
+    def create_task(self, task, due_date=None):
+        self.cursor.execute("Insert Into tasks(task,due_date,completed) VALUES(?,?,?)", (task, due_date, 0))
         self.con.commit()
-        
-        created_task = self.cursor.execute("Select id,task,due_date FROM tasks WHERE task=? and completed=0",(task,)).fetchall()
+
+        created_task = self.cursor.execute("Select id,task,due_date FROM tasks WHERE task=? and completed=0",
+                                           (task,)).fetchall()
         return created_task[-1]
-    
+
     def get_tasks(self):
         try:
             # Fetch incompleted tasks
@@ -38,22 +39,20 @@ class Database():
             print(f"Error fetching tasks: {e}")
             return [], []
 
-    
-    def mark_task_as_completed(self,taskid):
-        self.cursor.execute("Update tasks SET completed=1 WHERE id = ?",(taskid,))
+    def mark_task_as_completed(self, taskid):
+        self.cursor.execute("Update tasks SET completed=1 WHERE id = ?", (taskid,))
         self.con.commit()
-    
-    def mark_task_as_incompleted(self,taskid):
-        self.cursor.execute("Update tasks SET completed=0 WHERE id = ?",(taskid,))
+
+    def mark_task_as_incompleted(self, taskid):
+        self.cursor.execute("Update tasks SET completed=0 WHERE id = ?", (taskid,))
         self.con.commit()
-        
-        task_text = self.cursor.execute("SELECT task from tasks WHERE id = ?",(taskid,)).fetchall()
+
+        task_text = self.cursor.execute("SELECT task from tasks WHERE id = ?", (taskid,)).fetchall()
         return task_text[0][0]
 
-    def delete_task(self,taskid):
-        self.cursor.execute("DELETE FROM tasks WHERE id=?",(taskid,))
+    def delete_task(self, taskid):
+        self.cursor.execute("DELETE FROM tasks WHERE id=?", (taskid,))
         self.con.commit()
-        
-    
+
     def close_db_connection(self):
         self.con.close()

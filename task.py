@@ -16,6 +16,10 @@ class Home(MDScreen):
     pass
 
 
+class Workspace(MDScreen):
+    pass
+
+
 class Task(MDScreen):
     pass
 
@@ -88,7 +92,7 @@ class TaskManager(MDApp):
         self.task_list_dialog.open()
 
     def add_task(self, task_text_widget, task_date):
-        task_text = task_text_widget.text 
+        task_text = task_text_widget.text
         # Create the task in the database
         created_task = db.create_task(task_text, task_date)
         # Access the Task screen
