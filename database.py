@@ -56,3 +56,43 @@ class Database():
 
     def close_db_connection(self):
         self.con.close()
+
+class NoteDatabase():
+    def __init__(self):
+        self.con = sqlite3.connect("note-database.db")
+        self.cursor = self.con.cursor()
+        self.create_note_table()
+
+    def create_note_table(self):
+        self.cursor.execute("""Create Table If Not Exists notes 
+                            (
+                                ID integer PRIMARY KEY AUTOINCREMENT,
+                                note varchar(2500) NOT NULL,due_date VARCHAR(50)
+                            )""")
+        self.con.commit()
+
+    def create_note(self, note, due_date=None):
+        self.cursor.execute("Insert Into notes(note,due_date) VALUES(?,?)", (note, due_date))
+        self.con.commit()
+
+        created_note = self.cursor.execute("Select id, note, due_date FROM notes WHERE note=?", (note,)).fetchall()
+        return created_note[-1]
+
+    def get_note(self):
+        try:
+
+            # Fetch completed tasks
+            self.cursor.execute("SELECT * FROM notes")
+            completed_tasks = self.cursor.fetchall()
+
+            return completed_tasks
+        except Exception as e:
+            print(f"Error fetching tasks: {e}")
+            return []
+
+    def delete_note(self, note):
+        self.cursor.execute("DELETE FROM notes WHERE id=?", (note,))
+        self.con.commit()
+
+    def close_db_connection(self):
+        self.con.close()

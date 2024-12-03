@@ -6,10 +6,11 @@ from kivy.lang import Builder
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import TwoLineAvatarIconListItem, ILeftBody
 from kivymd.uix.selectioncontrol import MDCheckbox
-from database import Database
+from database import Database,NoteDatabase
 import re
 
 db = Database()
+db1 = NoteDatabase()
 
 
 class Home(MDScreen):
@@ -19,6 +20,8 @@ class Home(MDScreen):
 class Workspace(MDScreen):
     pass
 
+class NoteTaking(MDScreen):
+    pass
 
 class Task(MDScreen):
     pass
@@ -37,17 +40,15 @@ class Login(MDScreen):
 
 
 class DialogContent(MDBoxLayout):
-    """def __init__(self,**kwargs):
-        super().__init__(**kwargs)
-        self.ids.date_text.text = datetime.now().strftime("%A %d %B %Y")"""
     def show_date_picker(self):
         date_dialog = MDDatePicker()
         date_dialog.bind(on_save=self.on_save)
         date_dialog.open()
 
-    def on_save(self, value):
+    def on_save(self, instance, value, date_range):
         date = value.strftime("%A %d %B %Y")
         self.ids.date_text.text = str(date)
+
 
 
 class ListItemWithCheckbox(TwoLineAvatarIconListItem):
@@ -70,13 +71,31 @@ class ListItemWithCheckbox(TwoLineAvatarIconListItem):
         self.parent.remove_widget(the_list_item)
         db.delete_task(the_list_item.pk)
 
+    def delete_note(self,the_note_item):
+        self.parent.remove_widget(the_note_item)
+        db1.delete_note(the_note_item.pk)
+
 
 class LeftCheckbox(ILeftBody, MDCheckbox):
     pass
 
+class NoteDialogContent(MDBoxLayout):
+    """def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.ids.date_text.text = datetime.now().strftime("%A %d %B %Y")"""
+    def show_date_picker(self):
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_save)
+        date_dialog.open()
+
+    def on_save(self, instance, value, date_range):
+        date = value.strftime("%A %d %B %Y")
+        self.ids.date_text.text = str(date)
+
 
 class TaskManager(MDApp):
     task_list_dialog = None
+    note_list_dialog = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -147,6 +166,57 @@ class TaskManager(MDApp):
     def build(self):
         self.screen = Builder.load_file("task.kv")
         return self.screen
+
+    def show_note_dialog(self):
+        if not self.note_list_dialog:
+            self.note_list_dialog = MDDialog(
+                title="Create Note",
+                type="custom",
+                content_cls=NoteDialogContent()
+            )
+        self.note_list_dialog.open()
+
+    def add_note(self, note_text_widget, note_date):
+        note_text = note_text_widget.text
+        # Create the task in the database
+        created_note = db1.create_note(note_text, note_date)
+        # Access the Task screen
+        task_screen = self.root.get_screen('NoteTaking')
+        container = task_screen.ids.container
+        # Add the created task as a widget in the container
+        container.add_widget(
+            ListItemWithCheckbox(
+                pk=created_note[0],  # Primary key from the database
+                text=f"[b]{created_note[1]}[/b]",  # Task text
+                secondary_text=created_note[2]  # Task date
+            )
+        )
+
+    def close_note_dialog(self,**kwargs):
+        if self.note_list_dialog:
+            self.note_list_dialog.dismiss()
+
+    def on_note_start(self):
+        try:
+            # Fetch incompleted and completed tasks from the database
+            completed_notes = db1.get_note()
+
+            # Access the Task screen container
+            task_screen = self.root.get_screen('NoteTaking')
+            container = task_screen.ids.container
+
+
+            # Add completed tasks
+            for task in completed_notes:
+                add_note = ListItemWithCheckbox(
+                    pk=task[0],  # Task ID from the database
+                    text=f"[s]{task[1]}[/s]",
+                    secondary_text=task[2]  # Task date
+                )
+                add_note.ids.check.active = True
+                container.add_widget(add_note)
+        except Exception as e:
+            print(f"Error loading tasks: {e}")
 
     def on_kv_post(self, base_widget):
         # Bind the events after the kv file is fully loaded
