@@ -431,7 +431,7 @@ ScreenManager:
             id: note_text
             hint_text: "Add Note.."
             pos_hint: {"center_y":0.4}
-            max_text_length:50
+            max_text_length:25000
             on_text_validate:(app.add_note(note_text,date_text.text),app.close_note_dialog())
 
         MDIconButton:
