@@ -71,6 +71,15 @@ class ListItemWithCheckbox(TwoLineAvatarIconListItem):
         self.parent.remove_widget(the_list_item)
         db.delete_task(the_list_item.pk)
 
+class ListItemWithCheckboxNote(TwoLineAvatarIconListItem):
+
+    def __init__(self, pk=None, **kwargs):
+        super().__init__(**kwargs)
+        # state a pk which we shall use link the list items with the database
+        # primary keys
+        self.pk = pk
+
+
     def delete_note(self,the_note_item):
         self.parent.remove_widget(the_note_item)
         db1.delete_note(the_note_item.pk)
@@ -185,7 +194,7 @@ class TaskManager(MDApp):
         container = task_screen.ids.container
         # Add the created task as a widget in the container
         container.add_widget(
-            ListItemWithCheckbox(
+            ListItemWithCheckboxNote(
                 pk=created_note[0],  # Primary key from the database
                 text=f"[b]{created_note[1]}[/b]",  # Task text
                 secondary_text=created_note[2]  # Task date
@@ -198,47 +207,32 @@ class TaskManager(MDApp):
 
     def on_note_start(self):
         try:
-            # Fetch incompleted and completed tasks from the database
+            # Fetch notes from the database
             completed_notes = db1.get_note()
 
-            # Access the Task screen container
-            task_screen = self.root.get_screen('NoteTaking')
-            container = task_screen.ids.container
+            # Access the NoteTaking screen container
+            note_screen = self.root.get_screen('NoteTaking')
 
+            # Ensure the container exists and is accessible
+            container = getattr(note_screen.ids, 'container', None)
+            if container is None:
+                raise AttributeError("Container with id 'container' not found in NoteTaking screen.")
 
-            # Add completed tasks
-            for task in completed_notes:
-                add_note = ListItemWithCheckbox(
-                    pk=task[0],  # Task ID from the database
-                    text=f"[s]{task[1]}[/s]",
-                    secondary_text=task[2]  # Task date
+            # Clear existing notes (if needed)
+            container.clear_widgets()
+
+            # Add notes to the UI
+            for note in completed_notes:
+                add_note = ListItemWithCheckboxNote(
+                    pk=note[0],  # Note ID from the database
+                    text=f"[b]{note[1]}[/b]",  # Note text
+                    secondary_text=note[2]  # Note date
                 )
-                add_note.ids.check.active = True
                 container.add_widget(add_note)
+
+            print(f"Notes loaded into UI: {completed_notes}")
         except Exception as e:
             print(f"Error loading tasks: {e}")
-
-    def on_kv_post(self, base_widget):
-        # Bind the events after the kv file is fully loaded
-        if hasattr(self.screen.ids, "text_field_error"):
-            self.screen.ids.username_text.bind(
-                on_text_validate=self.set_error_message,
-                on_focus=self.set_error_message,
-            )
-        else:
-            print("Warning: 'text_field_error' ID not found in practice.kv")
-
-    def validate_email(self, instance, value):
-        # Regular expression for validating email
-        email_pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        if re.match(email_pattern, value):
-            instance.error = False
-        else:
-            instance.error = True
-
-    def toggle_password_visibility(self):
-        password_field = self.root.ids.password_field
-        password_field.password = not password_field.password
 
 
 if __name__ == "__main__":

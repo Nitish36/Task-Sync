@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 
@@ -76,15 +77,17 @@ class NoteDatabase():
         self.con.commit()
 
         created_note = self.cursor.execute("Select id, note, due_date FROM notes WHERE note=?", (note,)).fetchall()
+        print(f"Note created: {created_note}")
         return created_note[-1]
 
     def get_note(self):
         try:
-
+            db_path = os.path.abspath("note-database.db")
+            print(f"Fetching notes from database at: {db_path}")
             # Fetch completed tasks
             self.cursor.execute("SELECT * FROM notes")
             completed_tasks = self.cursor.fetchall()
-
+            print(f"Fetched notes: {completed_tasks}")  # Debugging line
             return completed_tasks
         except Exception as e:
             print(f"Error fetching tasks: {e}")
