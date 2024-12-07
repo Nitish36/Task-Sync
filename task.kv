@@ -41,8 +41,12 @@ ScreenManager:
         MDRaisedButton:
             text: "Get Started"
             pos_hint: {"center_x": 0.5}
-            md_bg_color: 0.255, 0.205, 0.148, 1
+            size_hint : None,None
+            width: self.parent.width * 0.5
+            height: root.height*0.08
             elevation: 0
+            md_bg_normal: ''
+            md_bg_color: (140/255,0/255,255/255)
             on_release:
                 root.manager.current = "Workspace"
                 root.manager.transition.direction = 'left'
@@ -84,9 +88,13 @@ ScreenManager:
         MDRaisedButton:
             text: "Note Taking"
             pos_hint: {"center_x": 0.5}
+            size_hint : None,None
+            width: self.parent.width * 0.5
+            height: root.height*0.08
             theme_text_color: "Custom"
-            md_bg_color: 0.255, 0.205, 0.148, 1
             elevation: 0
+            md_bg_normal: ''
+            md_bg_color: (140/255,0/255,255/255)
             on_release:
                 root.manager.current = "NoteTaking"
                 root.manager.transition.direction = 'left'
@@ -94,8 +102,12 @@ ScreenManager:
         MDRaisedButton:
             text: "Task"
             pos_hint: {"center_x": 0.5}
+            size_hint : None,None
+            width: self.parent.width * 0.5
+            height: root.height*0.08
             theme_text_color: "Custom"
-            md_bg_color: 0.255, 0.205, 0.148, 1
+            md_bg_normal: ''
+            md_bg_color: (140/255,0/255,255/255)
             elevation: 0
             on_release:
                 root.manager.current = "Task"

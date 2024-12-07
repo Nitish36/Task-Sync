@@ -7,7 +7,9 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import TwoLineAvatarIconListItem, ILeftBody
 from kivymd.uix.selectioncontrol import MDCheckbox
 from database import Database,NoteDatabase
-import re
+from kivy.core.window import Window
+
+Window.size = (500, 600)
 
 db = Database()
 db1 = NoteDatabase()
@@ -108,7 +110,9 @@ class TaskManager(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.screen = None
+        self.snackbar = None
+        self._interval = 0
+        self.screen = Builder.load_file("task.kv")
 
     def show_task_dialog(self):
         if not self.task_list_dialog:
@@ -173,7 +177,6 @@ class TaskManager(MDApp):
         instance_textfield.error = True
 
     def build(self):
-        self.screen = Builder.load_file("task.kv")
         return self.screen
 
     def show_note_dialog(self):
@@ -233,6 +236,8 @@ class TaskManager(MDApp):
             print(f"Notes loaded into UI: {completed_notes}")
         except Exception as e:
             print(f"Error loading tasks: {e}")
+
+
 
 
 if __name__ == "__main__":
