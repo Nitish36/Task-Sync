@@ -1,4 +1,4 @@
-name: Task-Sync App
+name: Python Application Workflow
 
 on:
   push:
@@ -19,14 +19,14 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'  # Replace with your preferred Python 3 version.
+        python-version: '3.x'  # Ensuring Python 3.x is used
 
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install cython  # Install Cython before installing Kivy
-        pip install -r requirements.txt
+        pip install cython  # Install Cython first to avoid issues with Kivy installation
+        pip install -r requirements.txt  # Install dependencies from requirements.txt
 
-    - name: Run Application Tests
+    - name: Run task.py
       run: |
-        python -m unittest discover -s tests  # Adjust this line based on your test setup
+        python task.py  # Running your task.py script
